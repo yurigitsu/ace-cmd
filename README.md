@@ -1,13 +1,15 @@
 # ace-cmd
 
 
-**ace-cmd** is a Ruby gem designed to facilitate command execution with a focus on success and failure handling.
+The ace-cmd gem is designed to simplify command execution, emphasizing effective handling of success and failure outcomes. It can be employed as a service object or interactor, fostering clean and organized code for managing complex operations.
 
-**ace-cmd** provides a simple and flexible way to handle command execution and result handling.
 
-**ace-cmd** offers a `Success` and `Failure` result classes to handle command execution results.
 
-**ace-cmd** allows method chaining for easy execution of multiple commands. It provides a `Result` object to access the result value, success, and failure, along with options to attach custom messages and metadata for better context.
+- **ace-cmd** provides a simple and flexible way to handle command execution and result handling.
+
+- **ace-cmd** offers a `Success` and `Failure` result classes to handle command execution results.
+
+- **ace-cmd** It provides a `Result` object to access the result value, success, and failure, along with options to attach custom messages and metadata for better context.
 
 ## Features
 
