@@ -28,10 +28,11 @@ The ace-cmd gem is designed to simplify command execution, emphasizing effective
 - [Advanced Usage](#advanced-usage)
   - [Custom Metadata](#custom-metadata)
   - [Custom Error Message](#custom-error-message)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
-- [Code of Conduct](#code-of-conduct)
+- OSS
+  - [Development](#development)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Code of Conduct](#code-of-conduct)
 
 ## Installation
 
