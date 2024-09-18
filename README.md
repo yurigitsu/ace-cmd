@@ -6,15 +6,15 @@ The ace-cmd gem is designed to simplify command execution, emphasizing effective
 
 
 - **ace-cmd** provides a simple and flexible way to handle command execution and result handling.
-
 - **ace-cmd** offers a `Success` and `Failure` result classes to handle command execution results.
-
 - **ace-cmd** It provides a `Result` object to access the result value, success, and failure, along with options to attach custom messages and metadata for better context.
 
 ## Features
 
 - **Command Execution**: Execute commands seamlessly, allowing for optional parameters.
+
 - **Success Handling**: Provides success responses with transformed messages and additional metadata.
+
 - **Failure Handling**: Handles failures gracefully, returning informative messages and context.
 
 
