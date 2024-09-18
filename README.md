@@ -69,7 +69,7 @@ class GreetingCommand
   end
 
   def process_message(message)
-    message ? Success(message.upcase) : Failure(message, msg: "No message provided")
+    message ? Success(message.upcase) : Failure("No message provided")
   end
 end
 ```
