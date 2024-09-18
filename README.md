@@ -77,10 +77,17 @@ end
 ### Handling Success
 
 ```ruby
-command = GreetingCommand.new
-result = command.call("Hello, World!")
+result = GreetingCommand.call("Hello, World!")
 
-puts result.value # Outputs: "HELLO, WORLD!"
+puts result.success? # Outputs: true
+puts result.failure? # Outputs: false
+
+puts result.success  # Outputs: "HELLO, WORLD!"
+puts result.failure  # Outputs: nil
+
+puts result.value    # Outputs: "HELLO, WORLD!"
+puts result.result   # Outputs: AceCmd::Success
+
 ```
 
 ### Handling Failure
@@ -88,7 +95,14 @@ puts result.value # Outputs: "HELLO, WORLD!"
 ```ruby
 result = GreetingCommand.call
 
-puts result.message # Outputs: "No message provided"
+puts result.failure? # Outputs: true
+puts result.success? # Outputs: false
+
+puts result.failure  # Outputs: "No message provided"
+puts result.success  # Outputs: nil 
+
+puts result.value    # Outputs: "No message provided"
+puts result.result   # Outputs: AceCmd::Failure
 ```
 
 ## Advanced Usage
@@ -106,16 +120,17 @@ class GreetingCommand
   end
   # ...
 end 
-
-result = GreetingCommand.("Hello, Advanced World!")
 ```
 
 ##### Custom Metadata
 
 ```ruby
-puts result.value # Outputs: "HELLO, ADVANCED WORLD!"
-puts result.meta[:lang] # Outputs: :eng
+result = GreetingCommand.("Hello, Advanced World!")
+puts result.value         # Outputs: "HELLO, ADVANCED WORLD!"
+
+puts result.meta[:lang]   # Outputs: :eng
 puts result.meta[:length] # Outputs: 22
+puts result.meta          # Outputs: {:lang=>:eng, :length=>22}
 ```
 
 #### Example 2: 
@@ -128,15 +143,15 @@ class GreetingCommand
     Failure(message, msg: "No message provided")
   end 
 end 
-
-command = GreetingCommand.new
 ```
 
-##### Custom Error Message
+##### Custom Message
 
 ```ruby
-result = command.call
-puts result.message # Outputs: "No message provided"
+result = GreetingCommand.call
+puts result.value    # Outputs: nil
+
+puts result.message  # Outputs: "No message provided"
 ```
 
 ## Development
