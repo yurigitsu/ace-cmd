@@ -4,30 +4,30 @@ module AceCmd
   # This class represents a result.
   #
   # @example
-  #   result = AceCmd::Result.new("Success", msg: "Operation completed", meta: { key: "value" })
+  #   result = AceCmd::Result.new("Success", err: nil, meta: { key: "value" })
   #   result.value # => "Success"
-  #   result.message # => "Operation completed"
+  #   result.error # => nil
   #   result.meta # => { key: "value" }
   #
   # @!attribute [r] value
   #   @return [Object] the value associated with the result
   #
-  # @!attribute [r] msg
-  #   @return [String, nil] an optional message associated with the result
+  # @!attribute [r] err
+  #   @return [String, nil] an optional error message associated with the result
   #
   # @!attribute [r] meta
   #   @return [Hash] optional metadata associated with the result
   class Result
-    attr_reader :value, :msg, :meta
+    attr_reader :value, :meta
 
     # Initializes a new Result instance.
     #
     # @param value [Object] the value to be wrapped in the result
-    # @param msg [String, nil] an optional message
+    # @param err [String, nil] an optional error message
     # @param meta [Hash] optional metadata
-    def initialize(value, msg: nil, meta: {})
+    def initialize(value, err: nil, meta: {})
       @value = value
-      @msg = msg
+      @err = err
       @meta = meta
     end
 
@@ -38,11 +38,12 @@ module AceCmd
       self
     end
 
-    # Returns the message associated with the result.
+    # Returns the error message associated with the result.
     #
-    # @return [String, nil] the message
-    def message
-      msg
+    # @return [String, nil] the error message
+    # @raise [StandardError] if there is an error message
+    def error
+      @err
     end
   end
 end

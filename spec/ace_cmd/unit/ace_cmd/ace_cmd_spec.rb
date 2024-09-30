@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe AceCmd::Command do
-  let(:dummy_class) { Class.new { include AceCmd::Command } }
+RSpec.describe AceCmd do
+  let(:dummy_class) { Class.new { include AceCmd } }
 
   describe "#Success" do
     it "returns a Success instance" do
