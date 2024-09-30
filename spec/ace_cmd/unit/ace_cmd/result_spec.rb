@@ -17,11 +17,11 @@ RSpec.describe AceCmd::Result do
     end
   end
 
-  describe "#message" do
-    it "returns message" do
-      result = described_class.new(value, msg: "test_message")
+  describe "#error" do
+    it "returns error" do
+      result = described_class.new(value, err: "test_message")
 
-      expect(result.message).to eq("test_message")
+      expect(result.error).to eq("test_message")
     end
   end
 

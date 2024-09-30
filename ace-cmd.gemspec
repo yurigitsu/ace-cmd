@@ -33,5 +33,8 @@ Gem::Specification.new do |spec|
 
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  spec.add_dependency "bigdecimal"
+  # DELETE
+  # spec.add_dependency "ace-config", "~> 0.1.0.beta.rc1b"
+  # spec.add_dependency "ace-config", git: "https://github.com/yurigitsu/ace-config.git"
+  spec.add_dependency "ace-config"
 end
