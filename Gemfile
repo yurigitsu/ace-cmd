@@ -1,4 +1,3 @@
-# Start of Selection
 # frozen_string_literal: true
 
 source "https://rubygems.org"
@@ -16,4 +15,4 @@ gem "rubocop", "~> 1.21"
 gem "rubocop-rake"
 gem "rubocop-rspec", require: false
 
-gem "ace-config", git: "https://github.com/yurigitsu/ace-config.git", branch: "main"
+gem "ace-config", git: "https://github.com/yurigitsu/ace-config.git", branch: "beta-candidate-0.1.0"
