@@ -5,8 +5,7 @@ require "spec_helper"
 RSpec.describe AceCmd do
   before do
     stub_const("DummyCallee", Class.new do
-      include AceCmd::Callee
-
+      include AceCallee
       def call(rez)
         rez
       end
@@ -14,7 +13,7 @@ RSpec.describe AceCmd do
 
     stub_const(
       "BaseDummyCommand", Class.new do
-        include AceCmd
+        include AceCommand
 
         command do
           fail_fast "Yo"
