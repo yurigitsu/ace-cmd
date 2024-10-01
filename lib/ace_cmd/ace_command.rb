@@ -2,7 +2,9 @@
 
 require "ace_config"
 
-# @example Including AceCmd in a class
+# Module for adding command functionality with success and failure handling
+#
+# @example Including AceCommand in a class
 #   class MyCommand
 #     include AceCommand
 #
@@ -42,7 +44,7 @@ module AceCommand
   # @param meta [Hash] optional metadata
   # @return [AceCmd::Success] a new Success instance
   #
-  # @example
+  # @example Creating a Success instance with metadata
   #   Success("Operation successful", meta: {time: Time.now})
   def Success(value = nil, err: nil, meta: {})
     AceCmd::Success.new(value, err: err, meta: meta)
@@ -51,11 +53,11 @@ module AceCommand
   # Creates a new Failure instance.
   #
   # @param value [Object] the value to be wrapped in the Failure instance
-  # @param err [Exception, nil] an optional exception
+  # @param err [Exception, nil] an optional exception or error message
   # @param meta [Hash] optional metadata
   # @return [AceCmd::Failure] a new Failure instance
   #
-  # @example
+  # @example Creating a Failure instance with an error
   #   Failure("Operation failed", err: StandardError.new("An error occurred"))
   def Failure(value = nil, err: nil, meta: {})
     default_err = self.class.command.failure
@@ -63,15 +65,15 @@ module AceCommand
     AceCmd::Failure.new(value, err: err || default_err, meta: meta)
   end
 
-  # Creates a new Failure instance and raises an error.
+  # Creates a new Failure instance and raises a FailFastError.
   #
   # @param value [Object] the value to be wrapped in the Failure instance
-  # @param err [Exception, nil] an optional exception
+  # @param err [Exception, nil] an optional exception or error message
   # @param meta [Hash] optional metadata
   # @return [void]
-  # @raise [FailFastError] always raises this error
+  # @raise [AceCmd::FailFastError] always raises this error with the created Failure instance
   #
-  # @example
+  # @example Triggering a fail-fast scenario
   #   Failure!("Critical error", err: RuntimeError.new("Unexpected condition"))
   def Failure!(value = nil, err: nil, meta: {}, **_opts)
     error = err || self.class.command.fail_fast

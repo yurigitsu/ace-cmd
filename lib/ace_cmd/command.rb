@@ -7,10 +7,11 @@ module AceCmd
     # Calls the instance method `call` on a new instance of the class.
     #
     # @param args [Array] arguments to be passed to the instance method
-    # @return [Object] the result of the instance method call
+    # @return [AceCmd::Success, AceCmd::Failure] the result of the instance method call
+    # @raise [StandardError] if unexpected_err is not set and a StandardError occurs
     # @example
     #   class MyCommand
-    #     include AceCmd::Command
+    #     include AceCommand
     #
     #     def call(arg)
     #       Success(arg)
@@ -33,10 +34,11 @@ module AceCmd
     # Calls the instance method `call!` on a new instance of the class.
     #
     # @param args [Array] arguments to be passed to the instance method
-    # @return [Object] the result of the instance method call
+    # @return [Object] the raw result of the instance method call
+    # @raise [StandardError] if any error occurs during execution
     # @example
     #   class MyCommand
-    #     include AceCmd
+    #     include AceCommand
     #
     #     def call!(arg)
     #       arg.upcase
