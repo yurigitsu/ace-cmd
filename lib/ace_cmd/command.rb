@@ -30,25 +30,5 @@ module AceCmd
 
       Failure.new(e, err: internal_err.is_a?(TrueClass) ? e : internal_err)
     end
-
-    # Calls the instance method `call!` on a new instance of the class.
-    #
-    # @param args [Array] arguments to be passed to the instance method
-    # @return [Object] the raw result of the instance method call
-    # @raise [StandardError] if any error occurs during execution
-    # @example
-    #   class MyCommand
-    #     include AceCommand
-    #
-    #     def call!(arg)
-    #       arg.upcase
-    #     end
-    #   end
-    #
-    #   result = MyCommand.call!("hello")
-    #   puts result # => "HELLO"
-    def call!(...)
-      new.call!(...)
-    end
   end
 end

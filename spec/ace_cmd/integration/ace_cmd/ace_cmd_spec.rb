@@ -41,29 +41,6 @@ RSpec.describe AceCmd do
           fail_fast DummyFailFastError
         end
 
-        def call(greeting = nil)
-          salute = build_greeting(greeting)
-          howdy = normalize_salute(salute, fail_fast)
-
-          process_howdy(howdy)
-        end
-
-        def build_greeting(greeting)
-          greeting
-        end
-
-        def normalize_salute(salute, fail_fast)
-          fail_fast ? Failure!(err: "No message provided") : salute
-        end
-
-        def process_howdy(howdy)
-          if howdy
-            Success(howdy.upcase, meta: { lang: :eng, length: howdy.length })
-          else
-            Failure(howdy, err: "No message provided")
-          end
-        end
-
         def call(greeting = nil, fail_fast: false, unexpected_err: false)
           raise "Oooooooops" if unexpected_err
 
