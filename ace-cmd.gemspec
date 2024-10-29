@@ -6,19 +6,19 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "ace_cmd/version"
 
 Gem::Specification.new do |spec|
-  spec.name    = "ace_cmd"
+  spec.name    = "ace-cmd"
   spec.version = AceCmd::VERSION
   spec.authors = ["yurigitsu"]
   spec.email   = ["yurigi.pro@gmail.com"]
   spec.license = "MIT"
 
-  spec.summary     = "A flexible and easy-to-use configuration handling gem."
-  spec.description = "Managing configurations with type validation, configirations load and dumping support."
+  spec.summary     = "A Ruby gem for creating command objects with result handling."
+  spec.description = "AceCmd is a Ruby gem for implementing the Command pattern with result handling."
   spec.homepage    = "https://github.com/yurigitsu/#{spec.name}"
 
   spec.required_ruby_version = ">= 3.0.0"
 
-  spec.files         = Dir["CHANGELOG.md", "LICENSE", "README.md", "ace_cmd.gemspec", "lib/**/*"]
+  spec.files         = Dir["CHANGELOG.md", "LICENSE", "README.md", "ace-cmd.gemspec", "lib/**/*"]
   spec.bindir        = "bin"
   spec.executables   = []
   spec.require_paths = ["lib"]
@@ -33,8 +33,5 @@ Gem::Specification.new do |spec|
 
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  # DELETE
-  # spec.add_dependency "ace-config", "~> 0.1.0.beta.rc1b"
-  # spec.add_dependency "ace-config", git: "https://github.com/yurigitsu/ace-config.git"
   spec.add_dependency "ace-config"
 end

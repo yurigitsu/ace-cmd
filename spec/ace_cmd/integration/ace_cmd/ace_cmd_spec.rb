@@ -5,8 +5,7 @@ require "spec_helper"
 RSpec.describe AceCmd do
   before do
     stub_const("DummyCallee", Class.new do
-      include AceCmd::Callee
-
+      include AceCallee
       def call(rez)
         rez
       end
@@ -14,7 +13,7 @@ RSpec.describe AceCmd do
 
     stub_const(
       "BaseDummyCommand", Class.new do
-        include AceCmd
+        include AceCommand
 
         command do
           fail_fast "Yo"
@@ -42,29 +41,6 @@ RSpec.describe AceCmd do
           fail_fast DummyFailFastError
         end
 
-        def call(greeting = nil)
-          salute = build_greeting(greeting)
-          howdy = normalize_salute(salute, fail_fast)
-
-          process_howdy(howdy)
-        end
-
-        def build_greeting(greeting)
-          greeting
-        end
-
-        def normalize_salute(salute, fail_fast)
-          fail_fast ? Failure!(err: "No message provided") : salute
-        end
-
-        def process_howdy(howdy)
-          if howdy
-            Success(howdy.upcase, meta: { lang: :eng, length: howdy.length })
-          else
-            Failure(howdy, err: "No message provided")
-          end
-        end
-
         def call(greeting = nil, fail_fast: false, unexpected_err: false)
           raise "Oooooooops" if unexpected_err
 
@@ -79,9 +55,9 @@ RSpec.describe AceCmd do
         end
 
         def normalize_salute(salute, fail_fast)
-          return Success("#{salute.success}!") if salute.success?
+          Failure!(salute) if fail_fast
 
-          fail_fast ? Failure!(salute) : salute
+          salute.success ? Success("#{salute.success}!") : Failure(salute.failure)
         end
 
         def process_howdy(howdy)
@@ -104,6 +80,8 @@ RSpec.describe AceCmd do
       let(:result) { MyDummyCommand.call(raw_message) }
 
       it "runs the success command" do
+        require "pry"
+
         aggregate_failures "result" do
           expect(result.value).to eq(message.upcase)
           expect(result.success).to eq(message.upcase)
