@@ -13,7 +13,8 @@ module AceCallee
     # @param args [Array] arguments to be passed to the instance method
     # @return [Object] the result of the instance method call
     def call(...)
-      obj = new(...)
+      obj = new
+
       yield(obj) if block_given?
 
       obj.call(...)

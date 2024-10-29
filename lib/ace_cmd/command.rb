@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# [TODO:] add error trace
+
 # Provides command interface functionality for AceCmd
 module AceCmd
   # This module provides class-level methods for command execution.
@@ -23,12 +25,14 @@ module AceCmd
     def call(...)
       super
     rescue FailFastError => e
-      e.err_obj
+      e.err_obj.tap { |err| err.trace = e.backtrace.first }
     rescue StandardError => e
       internal_err = command.unexpected_err
       raise e unless internal_err
 
-      Failure.new(e, err: internal_err.is_a?(TrueClass) ? e : internal_err)
+      err = internal_err.is_a?(TrueClass) ? e : internal_err
+
+      Failure.new(e, err: err, trace: e.backtrace.first)
     end
   end
 end

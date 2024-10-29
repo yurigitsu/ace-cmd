@@ -19,16 +19,19 @@ module AceCmd
   #   @return [Hash] optional metadata associated with the result
   class Result
     attr_reader :value, :meta
+    attr_accessor :trace
 
     # Initializes a new Result instance.
     #
     # @param value [Object] the value to be wrapped in the result
     # @param err [String, nil] an optional error message
     # @param meta [Hash] optional metadata
-    def initialize(value, err: nil, meta: {})
+    # @param trace [Array] optional trace
+    def initialize(value, err: nil, meta: {}, trace: nil)
       @value = value
       @err = err
       @meta = meta
+      @trace = trace
     end
 
     # Returns the result instance itself.

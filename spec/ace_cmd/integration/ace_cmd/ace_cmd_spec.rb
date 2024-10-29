@@ -55,9 +55,9 @@ RSpec.describe AceCmd do
         end
 
         def normalize_salute(salute, fail_fast)
-          return Success("#{salute.success}!") if salute.success?
+          Failure!(salute) if fail_fast
 
-          fail_fast ? Failure!(salute) : salute
+          salute.success ? Success("#{salute.success}!") : Failure(salute.failure)
         end
 
         def process_howdy(howdy)
@@ -80,6 +80,8 @@ RSpec.describe AceCmd do
       let(:result) { MyDummyCommand.call(raw_message) }
 
       it "runs the success command" do
+        require "pry"
+
         aggregate_failures "result" do
           expect(result.value).to eq(message.upcase)
           expect(result.success).to eq(message.upcase)

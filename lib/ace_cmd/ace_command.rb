@@ -16,12 +16,12 @@ require "ace_config"
 #   result = MyCommand.call("Hello")
 #   puts result.value # => "Hello"
 module AceCommand
-  include AceConfiguration::Isolated
+  extend AceConfiguration::Local
 
   configure :command do
     config :failure
     config :fail_fast
-    config unexpected_err: true
+    config :unexpected_err
   end
 
   # This method is called when the module is included in a class.
@@ -29,7 +29,7 @@ module AceCommand
   #
   # @param base [Class] the class that includes this module
   def self.included(base)
-    base.include(AceConfiguration::Isolated)
+    base.extend(AceConfiguration::Local)
     base.include(AceCallee)
     base.extend(AceCmd::Command)
 
