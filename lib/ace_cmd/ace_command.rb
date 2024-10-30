@@ -16,24 +16,21 @@ require "ace_config"
 #   result = MyCommand.call("Hello")
 #   puts result.value # => "Hello"
 module AceCommand
-  extend AceConfiguration::Local
-
-  configure :command do
-    config :failure
-    config :fail_fast
-    config :unexpected_err
-  end
-
   # This method is called when the module is included in a class.
   # It extends the base class with class-level methods.
   #
   # @param base [Class] the class that includes this module
   def self.included(base)
     base.extend(AceConfiguration::Local)
+
+    base.configure :command do
+      config :failure
+      config :fail_fast
+      config :unexpected_err
+    end
+
     base.include(AceCallee)
     base.extend(AceCmd::Command)
-
-    base.configure :command, hash: command.to_h, schema: command.type_schema
   end
 
   # rubocop:disable Naming/MethodName
