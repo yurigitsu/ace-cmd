@@ -25,7 +25,7 @@ module AceCmd
     def call(...)
       super
     rescue FailFastError => e
-      e.err_obj.tap { |err| err.trace = e.backtrace.first }
+      e.err_obj.tap { |err| err.trace = e.backtrace[1] }
     rescue StandardError => e
       internal_err = command.unexpected_err
       raise e unless internal_err

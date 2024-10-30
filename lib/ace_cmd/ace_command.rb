@@ -76,7 +76,8 @@ module AceCommand
   # @example Triggering a fail-fast scenario
   #   Failure!("Critical error", err: RuntimeError.new("Unexpected condition"))
   def Failure!(value = nil, err: nil, meta: {}, **_opts)
-    error = err || self.class.command.fail_fast
+    default_error = self.class.command.fail_fast || self.class.command.failure
+    error = err || default_error
 
     err_obj = AceCmd::Failure.new(value, err: error, meta: meta)
 

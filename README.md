@@ -105,11 +105,66 @@ puts result.value    # Outputs: "No message provided"
 puts result.result   # Outputs: AceCmd::Failure
 ```
 
+## Transactional Behavior: Fail Fast with `Failure!`
+
+```ruby
+class GreetingCommand
+  include AceCmd::Command
+  
+  def call(params)
+    message = process_message(params[:message])
+    msg = normalize_message(message, params[:recipients])
+
+    Success(msg)
+  end
+
+  def process_message(message)
+    message ? message.upcase : Failure!("No message provided")    
+  end 
+
+  def normalize_message(message, recipients)
+    Failure!("No recipients provided") if recipients.empty?
+     
+    recipients.map { |recipient| "#{recipient}: #{message}" }    
+  end 
+end 
+```
+```ruby
+params = {recipients: []}
+
+result = GreetingCommand.call(params)
+
+puts result.failure? # Outputs: true
+puts result.failure  # Outputs: "No message provided"
+puts result.value    # Outputs: "No message provided"
+```
+```ruby
+result = GreetingCommand.call(params.merge(message: "Hello!"))
+
+puts result.failure? # Outputs: true
+puts result.failure  # Outputs: "No recipients provided"
+puts result.value    # Outputs: "No recipients provided"
+```
+```ruby
+result = GreetingCommand.call(params.merge(recipients: ["Alice", "Bob"]))
+
+puts result.failure? # Outputs: false
+puts result.value    # Outputs: ["Alice: Hello!", "Bob: Hello!"]
+```
+
 ## Advanced Usage
 
-Here are some advanced examples demonstrating the use of `meta:` and `msg:` in the `ace-cmd` gem.
+Configurations and customization allow users to tailor the command to meet their specific needs and preferences
 
-#### Example 1:
+### Result Customization
+
+Here are some advanced examples of result customization. Available options are 
+
+- `meta` - Hash to attach custom metadata
+- `err` - Message or Error access via `error` method
+- `trace` - By design `Failure!` and `unexpected_err` error's stack top entry 
+
+### #meta
 
 ```ruby
 class GreetingCommand
@@ -122,8 +177,6 @@ class GreetingCommand
 end 
 ```
 
-##### Custom Metadata
-
 ```ruby
 result = GreetingCommand.("Hello, Advanced World!")
 puts result.value         # Outputs: "HELLO, ADVANCED WORLD!"
@@ -133,25 +186,157 @@ puts result.meta[:length] # Outputs: 22
 puts result.meta          # Outputs: {:lang=>:eng, :length=>22}
 ```
 
-#### Example 2: 
-
+### #error
+##### set via `err` access via `error` method. Availiable as param for `#Success` as well (ex. partial success)
 ```ruby
 class GreetingCommand
   include AceCmd::Command
   # ...
   def process_message(message)
-    Failure(message, msg: "No message provided")
+    Failure(message, err: "No message provided")
   end 
 end 
 ```
 
-##### Custom Message
+```ruby
+result = GreetingCommand.call
+puts result.value   # Outputs: nil
+puts result.error   # Outputs: "No message provided"
+puts result.trace   # Outputs:
+```
+### #trace
+##### Available as accessor on `Result` object
+```ruby
+1| class DoomedCommand
+2|   include AceCmd::Command
+3|   
+4|   def call
+5|     Failure!
+6|   end
+7|   # ...
+8| end 
+```
+```ruby
+result = GreetingCommand.call
+puts result.failure? # Outputs: true
+puts result.trace    # Outputs: path/to/cmds/doomed_command.rb:5:in `call'
+```
+
+### Failure Configurations
+
+Provides options for default failure message or errors. Available configs are:
+
+- `failure` - Message or Error
+- `fail_fast` - Message or Error
+- `unexpected_err` - Bool(true) or Message or Error
+
+### .failure
+```ruby
+1 | class DoomedCommand
+2 |   include AceCmd::Command
+3 |   
+4 |   command do
+5 |     failure "Default Error"
+6 |   end
+7 |   
+8 |   def call(error = nil, fail_fast: false)
+9 |     Failure! if fail_fast
+10| 
+11|     return Failure("Foo") unless option
+12|       
+13|     Failure(error, err: "Insufficient funds")
+14|   end
+15|   # ...
+16| end 
+```
+
+```ruby
+result = DoomedCommand.call(fail_fast: true)
+# NOTE: not configured fail fast uses default error
+puts result.failure # Outputs: nil
+puts result.error   # Outputs: "Default Error"
+puts result.trace   # Outputs: path/to/cmds/doomed_command.rb:5:in `call'
+
+
+result = DoomedCommand.call
+puts result.failure # Outputs: "Foo"
+puts result.error   # Outputs: "Default Error"
+
+result = DoomedCommand.call('Buzz')
+puts result.failure # Outputs: "Buzz"
+puts result.error   # Outputs: "Insufficient funds"
+```
+### .fail_fast
+```ruby
+1 | class DoomedCommand
+2 |   include AceCmd::Command
+3 |   
+4 |   command do
+5 |     fail_fast "Default Fail Fast Error"
+6 |   end
+7 | 
+8 |   def call
+9 |     Failure!
+10|   end
+11|   # ...
+12| end 
+```
+
+```ruby
+result = DoomedCommand.call
+puts result.failure # Outputs: nil
+puts result.error   # Outputs: "Default Fail Fast Error"
+puts result.trace   # Outputs: path/to/cmds/doomed_command.rb:9:in `call'
+```
+
+### .unexpected_err
+```ruby
+1 | class GreetingCommand
+2 |   include AceCmd::Command
+3 |   
+4 |   command do    
+5 |     unexpected_err true
+5 |   end
+6 | 
+7 |   def call
+8 |     1 + "2"   
+9 |   end
+10|   # ...
+11| end 
+```
 
 ```ruby
 result = GreetingCommand.call
-puts result.value    # Outputs: nil
+puts result.failure # Outputs: nil
+puts result.error   # Outputs: TypeError: no implicit conversion of Integer into String
+puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:9:in `call'
+```
 
-puts result.message  # Outputs: "No message provided"
+### .unexpected_err (wrapped)
+```ruby
+1 | class GreetingCommand
+2 |   include AceCmd::Command
+3 |   
+4 |   class GreetingError < StandardError; end
+5 | 
+6 |   command do    
+7 |     unexpected_err GreetingError
+8 |   end
+9 | 
+10|   def call
+11|     1 + "2"   
+12|   end
+13|   # ...
+14| end 
+```
+
+```ruby
+result = GreetingCommand.call
+# NOTE: Original error becomes value (failure)
+puts result.failure # Outputs: TypeError: no implicit conversion of Integer into String
+
+puts result.error   # Outputs: GreetingError
+puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:12:in `call'
 ```
 
 ## Development

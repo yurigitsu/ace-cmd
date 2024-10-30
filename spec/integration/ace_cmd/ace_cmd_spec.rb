@@ -4,31 +4,17 @@ require "spec_helper"
 
 RSpec.describe AceCmd do
   before do
-    stub_const("DummyCallee", Class.new do
-      include AceCallee
-      def call(rez)
-        rez
-      end
-    end)
+    support_dummy_calle("DummyCallee")
+    support_dummy_base_command("BaseDummyCommand")
 
-    stub_const(
-      "BaseDummyCommand", Class.new do
-        include AceCommand
-
-        command do
-          fail_fast "Yo"
-        end
-      end
-    )
-
-    stub_const("DummyFailFastError", Class.new(StandardError))
-    stub_const("DummyInternalError", Class.new(StandardError))
+    support_dummy_error("DummyFailFastError")
+    support_dummy_error("DummyInternalError")
 
     stub_const(
       "DummyCommand",
       Class.new(BaseDummyCommand) do
         command do
-          fail_fast "Default Fail Fselfast message provided"
+          fail_fast "Default Fail Fast message provided"
           unexpected_err DummyInternalError
         end
       end
@@ -80,8 +66,6 @@ RSpec.describe AceCmd do
       let(:result) { MyDummyCommand.call(raw_message) }
 
       it "runs the success command" do
-        require "pry"
-
         aggregate_failures "result" do
           expect(result.value).to eq(message.upcase)
           expect(result.success).to eq(message.upcase)

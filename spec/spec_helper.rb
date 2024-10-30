@@ -13,4 +13,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  Dir[File.join("./spec/support/**/*.rb")].each { |f| require f }
+  config.include Dummy
 end
