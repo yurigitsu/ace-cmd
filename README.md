@@ -105,7 +105,7 @@ puts result.value    # Outputs: "No message provided"
 puts result.result   # Outputs: AceCmd::Failure
 ```
 
-## Transactional Behavior: Fail Fast with `Failure!`
+### Transactional Behavior: Fail Fast with `Failure!`
 
 ```ruby
 class GreetingCommand
@@ -149,6 +149,7 @@ puts result.value    # Outputs: "No recipients provided"
 result = GreetingCommand.call(params.merge(recipients: ["Alice", "Bob"]))
 
 puts result.failure? # Outputs: false
+puts result.success  # Outputs: true
 puts result.value    # Outputs: ["Alice: Hello!", "Bob: Hello!"]
 ```
 
@@ -164,7 +165,7 @@ Here are some advanced examples of result customization. Available options are
 - `err` - Message or Error access via `error` method
 - `trace` - By design `Failure!` and `unexpected_err` error's stack top entry 
 
-### #meta
+### .meta
 
 ```ruby
 class GreetingCommand
@@ -186,7 +187,7 @@ puts result.meta[:length] # Outputs: 22
 puts result.meta          # Outputs: {:lang=>:eng, :length=>22}
 ```
 
-### #error
+### .error
 ##### set via `err` access via `error` method. Availiable as param for `#Success` as well (ex. partial success)
 ```ruby
 class GreetingCommand
@@ -204,7 +205,7 @@ puts result.value   # Outputs: nil
 puts result.error   # Outputs: "No message provided"
 puts result.trace   # Outputs:
 ```
-### #trace
+### .trace
 ##### Available as accessor on `Result` object
 ```ruby
 1| class DoomedCommand
@@ -230,7 +231,7 @@ Provides options for default failure message or errors. Available configs are:
 - `fail_fast` - Message or Error
 - `unexpected_err` - Bool(true) or Message or Error
 
-### .failure
+### failure
 ```ruby
 1 | class DoomedCommand
 2 |   include AceCmd::Command
@@ -266,7 +267,7 @@ result = DoomedCommand.call('Buzz')
 puts result.failure # Outputs: "Buzz"
 puts result.error   # Outputs: "Insufficient funds"
 ```
-### .fail_fast
+### fail_fast
 ```ruby
 1 | class DoomedCommand
 2 |   include AceCmd::Command
@@ -289,7 +290,7 @@ puts result.error   # Outputs: "Default Fail Fast Error"
 puts result.trace   # Outputs: path/to/cmds/doomed_command.rb:9:in `call'
 ```
 
-### .unexpected_err
+### unexpected_err
 ```ruby
 1 | class GreetingCommand
 2 |   include AceCmd::Command
@@ -312,7 +313,7 @@ puts result.error   # Outputs: TypeError: no implicit conversion of Integer into
 puts result.trace   # Outputs: path/to/cmds/greeting_command.rb:9:in `call'
 ```
 
-### .unexpected_err (wrapped)
+### unexpected_err (wrapped)
 ```ruby
 1 | class GreetingCommand
 2 |   include AceCmd::Command
