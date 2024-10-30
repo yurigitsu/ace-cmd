@@ -25,9 +25,16 @@ The ace-cmd gem is designed to simplify command execution, emphasizing effective
 - [Basic Usage](#basic-usage)
   - [Handling Success](#handling-success)
   - [Handling Failure](#handling-failure)
+  - [Transactional Behavior](#transactional-behavior-fail-fast-with-failure)
 - [Advanced Usage](#advanced-usage)
-  - [Custom Metadata](#custom-metadata)
-  - [Custom Error Message](#custom-error-message)
+  - [Result Customization](#result-customization)
+    - [meta](#meta)
+    - [error](#error)
+    - [trace](#trace)
+  - [Command Configurations](#command-configurations)
+    - [failure](#failure)
+    - [fail_fast](#fail_fast)
+    - [unexpected_err](#unexpected_err)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -69,12 +76,12 @@ class GreetingCommand
   end
 
   def process_message(message)
-    message ? Success(message.upcase) : Failure("No message provided")
+    message.success? ? Success(message.upcase) : Failure("No message provided")
   end
 end
 ```
 
-### Handling Success
+### Handling `Success`
 
 ```ruby
 result = GreetingCommand.call("Hello, World!")
@@ -90,7 +97,7 @@ puts result.result   # Outputs: AceCmd::Success
 
 ```
 
-### Handling Failure
+### Handling `Failure`
 
 ```ruby
 result = GreetingCommand.call
@@ -157,7 +164,7 @@ puts result.value    # Outputs: ["Alice: Hello!", "Bob: Hello!"]
 
 Configurations and customization allow users to tailor the command to meet their specific needs and preferences
 
-### Result Customization
+### `Result` Customization
 
 Here are some advanced examples of result customization. Available options are 
 
@@ -223,7 +230,7 @@ puts result.failure? # Outputs: true
 puts result.trace    # Outputs: path/to/cmds/doomed_command.rb:5:in `call'
 ```
 
-### Failure Configurations
+### Command `Configurations`
 
 Provides options for default failure message or errors. Available configs are:
 
